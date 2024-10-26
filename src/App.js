@@ -1,23 +1,71 @@
-import logo from './logo.svg';
-import './App.css';
+import { AppBar, Drawer, Toolbar, List, Box } from "@mui/material";
+import FilterFramesIcon from "@mui/icons-material/FilterFrames";
+import AddToDriveIcon from "@mui/icons-material/AddToDrive";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import { NavigationButton } from "./components/NavigationButton";
+import { Routes, Route } from "react-router-dom";
+import { OrdersPage } from "./pages/Orders";
+import { BrandPage } from "./pages/Brand";
+import { ItemsPage } from "./pages/ItemList";
+
+const drawerWidth = 240;
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="fixed"
+          sx={{
+            width: `calc(100% - ${drawerWidth}px)`,
+            ml: `${drawerWidth}px`,
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <Toolbar>Desire адмін панель</Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="permanent"
+          anchor="left"
+        >
+          <Toolbar />
+          <List>
+            <NavigationButton
+              Icon={FilterFramesIcon}
+              text={"Замовлення"}
+              path="/"
+            />
+            <NavigationButton
+              Icon={EventNoteIcon}
+              text={"Товари"}
+              path="/items"
+            />
+            <NavigationButton
+              Icon={AddToDriveIcon}
+              text={"Бренд"}
+              path="/brand"
+            />
+          </List>
+        </Drawer>
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+        >
+          <Toolbar />
+          <Routes>
+            <Route element={<OrdersPage />} path="/" />
+            <Route element={<BrandPage />} path="/brand" />
+            <Route element={<ItemsPage />} path="/items" />
+          </Routes>
+        </Box>
+      </Box>
     </div>
   );
 }
