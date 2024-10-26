@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import { OrdersPage } from "./pages/Orders";
 import { BrandPage } from "./pages/Brand";
 import { ItemsPage } from "./pages/ItemList";
+import { CreateItemPage } from "./pages/CreateNewItem";
+import { ItemEdit } from "./pages/ItemInfo";
 
 const drawerWidth = 240;
 
@@ -63,6 +65,8 @@ function App() {
             <Route element={<OrdersPage />} path="/" />
             <Route element={<BrandPage />} path="/brand" />
             <Route element={<ItemsPage />} path="/items" />
+            <Route element={<CreateItemPage />} path="/createitem" />
+            <Route element={<ItemEdit />} path="/edititem/:id" />
           </Routes>
         </Box>
       </Box>
