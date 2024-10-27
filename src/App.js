@@ -9,12 +9,16 @@ import { BrandPage } from "./pages/Brand";
 import { ItemsPage } from "./pages/ItemList";
 import { CreateItemPage } from "./pages/CreateNewItem";
 import { ItemEdit } from "./pages/ItemInfo";
+import { Loader } from "./components/Loader";
+import { useLoader } from "./redux/selectors";
 
 const drawerWidth = 240;
 
 function App() {
+  const loader = useLoader();
   return (
     <div className="App">
+      {loader && <Loader />}
       <Box sx={{ display: "flex" }}>
         <AppBar
           position="fixed"

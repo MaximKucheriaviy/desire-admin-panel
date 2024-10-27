@@ -17,6 +17,9 @@ import {
 } from "../services/api";
 import CloudUploadSharp from "@mui/icons-material/CloudUploadSharp";
 import { styled } from "@mui/material/styles";
+import { useDispatch } from "react-redux";
+import { enableLoader, disableLoader } from "../redux/slices";
+import { useNavigate } from "react-router-dom";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -42,28 +45,35 @@ export const CreateItemPage = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [typeList, setTypeList] = useState([]);
 
+  const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
+      dispatch(enableLoader());
       const brands = await getAllBrands();
       setBrandList(brands);
+      dispatch(disableLoader());
     })();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     (async () => {
+      dispatch(enableLoader());
       const categories = await getCategories();
       setCategoryList(categories);
+      dispatch(disableLoader());
     })();
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     if (!category) {
       return;
     }
     (async () => {
+      dispatch(enableLoader());
       const types = await getTypes(category);
       setTypeList(types);
+      dispatch(disableLoader());
     })();
-  }, [category]);
+  }, [category, dispatch]);
 
   const onSubmit = async () => {
     const data = new FormData();
@@ -73,9 +83,10 @@ export const CreateItemPage = () => {
     data.append("brand", brand);
     data.append("Image", image);
     data.append("price", price);
-
+    dispatch(enableLoader());
     const item = await createItem(data);
     console.log(item);
+    dispatch(disableLoader());
   };
   return (
     <Box>
