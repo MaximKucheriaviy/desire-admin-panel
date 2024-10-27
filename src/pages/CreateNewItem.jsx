@@ -46,6 +46,7 @@ export const CreateItemPage = () => {
   const [typeList, setTypeList] = useState([]);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       dispatch(enableLoader());
@@ -85,7 +86,7 @@ export const CreateItemPage = () => {
     data.append("price", price);
     dispatch(enableLoader());
     const item = await createItem(data);
-    console.log(item);
+    navigate(`/edititem/${item._id}`);
     dispatch(disableLoader());
   };
   return (
