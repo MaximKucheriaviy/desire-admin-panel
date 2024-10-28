@@ -12,6 +12,9 @@ import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { Fragment } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useDispatch } from "react-redux";
+import { enableLoader, disableLoader } from "../redux/slices";
+import { createStoredItem } from "../services/api";
 
 const style = {
   position: "absolute",
@@ -29,10 +32,27 @@ export const ModalCreateStoreItem = ({ modalState, setModalState, itemID }) => {
   const [color, setColor] = useState("#ffffff");
   const [colorName, setColorname] = useState("");
   const [count, setCount] = useState(0);
-
   const [sizeList, setSizeList] = useState([]);
-
   const [size, setSize] = useState("");
+
+  const dispatch = useDispatch();
+
+  const onSubmit = async () => {
+    try {
+      dispatch(enableLoader());
+      await createStoredItem({
+        itemID,
+        color,
+        colorName,
+        count,
+        sizes: sizeList,
+      });
+      setModalState((prev) => !prev);
+    } catch (err) {
+      console.log(err);
+    }
+    dispatch(disableLoader());
+  };
 
   return (
     <Modal open={modalState}>
@@ -113,7 +133,8 @@ export const ModalCreateStoreItem = ({ modalState, setModalState, itemID }) => {
           </Grid>
           <Grid size={4}>
             <Button
-              onClick={() => setModalState((prev) => !prev)}
+              disabled={!color || !colorName || size.length === 0 || !count}
+              onClick={onSubmit}
               variant="contained"
             >
               Створити

@@ -113,6 +113,8 @@ export const ItemEdit = () => {
     setItem(result);
     dispatch(disableLoader());
   };
+  console.log(item);
+
   if (!item.category._id) {
     return <></>;
   }
@@ -313,6 +315,7 @@ export const ItemEdit = () => {
       <ModalCreateStoreItem
         modalState={modalState}
         setModalState={setModalState}
+        itemID={params.id}
       />
     </Box>
   );

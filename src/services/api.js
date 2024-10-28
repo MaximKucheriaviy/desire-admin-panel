@@ -95,3 +95,12 @@ export const updateItem = async (id, fields) => {
     console.log(err);
   }
 };
+
+export const createStoredItem = async (data) => {
+  try {
+    const result = await axios.post("/storeditem", data);
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
