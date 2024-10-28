@@ -104,3 +104,12 @@ export const createStoredItem = async (data) => {
     console.log(err);
   }
 };
+
+export const deleteStoredItem = async (id) => {
+  try {
+    const data = await axios.delete("/storeditem", { data: { id } });
+    return data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

@@ -170,7 +170,7 @@ export const CreateItemPage = () => {
             onChange={({ target }) => setImage(target.files[0])}
           />
         </Button>
-        {image && <Typography variant="body1">{image.name}</Typography>}
+        {image && <Typography variant="subtitle1">{image.name}</Typography>}
       </Box>
       <Box mt={4}>
         <Button

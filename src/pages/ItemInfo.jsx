@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  TableBody,
   Paper,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -24,11 +25,13 @@ import {
   getAllBrands,
   getTypes,
   getCategories,
+  deleteStoredItem,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import DeleteForever from "@mui/icons-material/DeleteForever";
 import { ModalCreateStoreItem } from "../components/ModalCreateStoreItem";
 
 export const ItemEdit = () => {
@@ -113,7 +116,16 @@ export const ItemEdit = () => {
     setItem(result);
     dispatch(disableLoader());
   };
-  console.log(item);
+  const deleteSTHandler = async (id, index) => {
+    dispatch(enableLoader());
+    await deleteStoredItem(id);
+    setItem((prev) => {
+      const obj = { ...prev };
+      prev.storedItems.splice(index, 1);
+      return obj;
+    });
+    dispatch(disableLoader());
+  };
 
   if (!item.category._id) {
     return <></>;
@@ -286,14 +298,60 @@ export const ItemEdit = () => {
                     <TableCell>
                       <Typography variant="body2">Назва кольору</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell width={200}>
                       <Typography variant="body2">Розміри</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2">Наявна кількість</Typography>
                     </TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
+                <TableBody>
+                  {item.storedItems.map((item, index) => (
+                    <TableRow key={item._id}>
+                      <TableCell>
+                        <Box
+                          width={"40px"}
+                          height={"40px"}
+                          border="1px solid black"
+                          sx={{ backgroundColor: item.color }}
+                        ></Box>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body1">
+                          {item.colorName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Grid spacing={1} container>
+                          {item.sizes.map((item, index) => (
+                            <Grid size={3}>
+                              <Box
+                                display="flex"
+                                borderRadius="10px"
+                                justifyContent="center"
+                                border="1px solid black"
+                              >
+                                <Typography variant="body2">{item}</Typography>
+                              </Box>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body1">{item.count}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => deleteSTHandler(item._id, index)}
+                        >
+                          <DeleteForever />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
               </Table>
             </Box>
             <Box mt={4}>
