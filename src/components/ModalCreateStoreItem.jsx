@@ -28,7 +28,12 @@ const style = {
   p: 4,
 };
 
-export const ModalCreateStoreItem = ({ modalState, setModalState, itemID }) => {
+export const ModalCreateStoreItem = ({
+  modalState,
+  setModalState,
+  itemID,
+  setItem,
+}) => {
   const [color, setColor] = useState("#ffffff");
   const [colorName, setColorname] = useState("");
   const [count, setCount] = useState(0);
@@ -40,7 +45,7 @@ export const ModalCreateStoreItem = ({ modalState, setModalState, itemID }) => {
   const onSubmit = async () => {
     try {
       dispatch(enableLoader());
-      await createStoredItem({
+      const STA = await createStoredItem({
         itemID,
         color,
         colorName,
@@ -48,6 +53,10 @@ export const ModalCreateStoreItem = ({ modalState, setModalState, itemID }) => {
         sizes: sizeList,
       });
       setModalState((prev) => !prev);
+      setItem((prev) => {
+        const obj = { ...prev };
+        return obj;
+      });
     } catch (err) {
       console.log(err);
     }

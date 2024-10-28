@@ -374,6 +374,7 @@ export const ItemEdit = () => {
         modalState={modalState}
         setModalState={setModalState}
         itemID={params.id}
+        setItem={setItem}
       />
     </Box>
   );
