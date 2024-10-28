@@ -86,3 +86,12 @@ export const deleteItem = async (id) => {
     console.log(err);
   }
 };
+
+export const updateItem = async (id, fields) => {
+  try {
+    const item = await axios.patch(`/item/${id}`, { fields });
+    return item.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

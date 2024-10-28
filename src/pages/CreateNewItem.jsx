@@ -113,8 +113,10 @@ export const CreateItemPage = () => {
       </Box>
       <Box width={300} mt={4}>
         <FormControl fullWidth>
-          <InputLabel>Бренд</InputLabel>
+          <InputLabel id="brandLable">Бренд</InputLabel>
           <Select
+            labelId="brandLable"
+            label="Бренд"
             value={brand}
             onChange={({ target }) => setBrand(target.value)}
           >
