@@ -113,3 +113,12 @@ export const deleteStoredItem = async (id) => {
     console.log(err);
   }
 };
+
+export const updateStoredItem = async (id, fields) => {
+  try {
+    const item = await axios.patch(`/storeditem/${id}`, { fields });
+    return item.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

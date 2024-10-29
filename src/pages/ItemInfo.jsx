@@ -25,14 +25,13 @@ import {
   getAllBrands,
   getTypes,
   getCategories,
-  deleteStoredItem,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
-import DeleteForever from "@mui/icons-material/DeleteForever";
 import { ModalCreateStoreItem } from "../components/ModalCreateStoreItem";
+import { SizesTableRow } from "../components/SizesTableRow";
 
 export const ItemEdit = () => {
   const params = useParams();
@@ -47,6 +46,7 @@ export const ItemEdit = () => {
   const [brandList, setBrandList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [typeList, setTypeList] = useState([]);
+  const [update, setUpdate] = useState(true);
 
   const [editNameMode, setEditNameMode] = useState(false);
   const [modalState, setModalState] = useState(false);
@@ -96,7 +96,7 @@ export const ItemEdit = () => {
       setItem(item);
       dispatch(disableLoader());
     })();
-  }, [params.id, dispatch]);
+  }, [params.id, dispatch, update]);
   const onDelete = async () => {
     await deleteItem(params.id);
     navigate("/items");
@@ -114,16 +114,6 @@ export const ItemEdit = () => {
     fields[field] = value;
     const result = await updateItem(item._id, fields);
     setItem(result);
-    dispatch(disableLoader());
-  };
-  const deleteSTHandler = async (id, index) => {
-    dispatch(enableLoader());
-    await deleteStoredItem(id);
-    setItem((prev) => {
-      const obj = { ...prev };
-      prev.storedItems.splice(index, 1);
-      return obj;
-    });
     dispatch(disableLoader());
   };
 
@@ -309,47 +299,12 @@ export const ItemEdit = () => {
                 </TableHead>
                 <TableBody>
                   {item.storedItems.map((item, index) => (
-                    <TableRow key={item._id}>
-                      <TableCell>
-                        <Box
-                          width={"40px"}
-                          height={"40px"}
-                          border="1px solid black"
-                          sx={{ backgroundColor: item.color }}
-                        ></Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body1">
-                          {item.colorName}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Grid spacing={1} container>
-                          {item.sizes.map((item, index) => (
-                            <Grid size={3}>
-                              <Box
-                                display="flex"
-                                borderRadius="10px"
-                                justifyContent="center"
-                                border="1px solid black"
-                              >
-                                <Typography variant="body2">{item}</Typography>
-                              </Box>
-                            </Grid>
-                          ))}
-                        </Grid>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body1">{item.count}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() => deleteSTHandler(item._id, index)}
-                        >
-                          <DeleteForever />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
+                    <SizesTableRow
+                      item={item}
+                      key={item._id}
+                      update={setUpdate}
+                      index={index}
+                    />
                   ))}
                 </TableBody>
               </Table>
@@ -374,7 +329,7 @@ export const ItemEdit = () => {
         modalState={modalState}
         setModalState={setModalState}
         itemID={params.id}
-        setItem={setItem}
+        update={setUpdate}
       />
     </Box>
   );
