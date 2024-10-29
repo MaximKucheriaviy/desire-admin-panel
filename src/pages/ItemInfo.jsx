@@ -25,6 +25,7 @@ import {
   getAllBrands,
   getTypes,
   getCategories,
+  updateItemImage,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -32,6 +33,19 @@ import { enableLoader, disableLoader } from "../redux/slices";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import { ModalCreateStoreItem } from "../components/ModalCreateStoreItem";
 import { SizesTableRow } from "../components/SizesTableRow";
+import { styled } from "@mui/material/styles";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export const ItemEdit = () => {
   const params = useParams();
@@ -112,14 +126,24 @@ export const ItemEdit = () => {
     dispatch(enableLoader());
     const fields = {};
     fields[field] = value;
-    const result = await updateItem(item._id, fields);
-    setItem(result);
+    await updateItem(item._id, fields);
+    setUpdate((prev) => !prev);
     dispatch(disableLoader());
   };
 
   if (!item.category._id) {
     return <></>;
   }
+
+  const onMainImageSelect = async ({ target }) => {
+    dispatch(enableLoader());
+    const data = new FormData();
+    data.append("imageId", item.image.id);
+    data.append("Image", target.files[0]);
+    await updateItemImage(item._id, data);
+    setUpdate((prev) => !prev);
+    dispatch(disableLoader());
+  };
   return (
     <Box>
       <Paper>
@@ -268,7 +292,39 @@ export const ItemEdit = () => {
                 sx={{ border: "1px solid black", padding: "5px" }}
                 width={"300px"}
               >
-                <img src={item.image.url} alt="cover" />
+                <Box>
+                  <Box
+                    height={(300 * 12) / 9}
+                    sx={{
+                      backgroundImage: `url(${item.image.url})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignItems={"flex-end"}
+                  >
+                    <IconButton
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      sx={{
+                        color: "#ffffff",
+                        border: "2px solid white",
+                        borderRadius: "10px",
+                      }}
+                      tabIndex={-1}
+                    >
+                      <ModeEditOutlineIcon />
+                      <VisuallyHiddenInput
+                        type="file"
+                        accept=".jpg, .jpeg, .png"
+                        onChange={onMainImageSelect}
+                      />
+                    </IconButton>
+                  </Box>
+                </Box>
+                {/* <img src={} alt="cover" /> */}
               </Box>
             </Grid>
           </Grid>

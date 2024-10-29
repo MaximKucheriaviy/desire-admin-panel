@@ -122,3 +122,16 @@ export const updateStoredItem = async (id, fields) => {
     console.log(err);
   }
 };
+
+export const updateItemImage = async (id, data) => {
+  try {
+    const result = await axios.patch(`/item/image/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
