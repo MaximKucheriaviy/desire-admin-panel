@@ -68,6 +68,9 @@ export const SizesTableRow = ({ item, update, index }) => {
           <Typography variant="body1">{item.colorName}</Typography>
         </TableCell>
         <TableCell>
+          <Typography variant="body1">{item.totalCount}</Typography>
+        </TableCell>
+        <TableCell>
           <IconButton onClick={() => deleteSTHandler(item._id, index)}>
             <DeleteForever />
           </IconButton>
@@ -94,7 +97,7 @@ export const SizesTableRow = ({ item, update, index }) => {
               </TableHead>
               <TableBody>
                 {item.sizes.map((item, index) => (
-                  <TableRow>
+                  <TableRow key={item._id}>
                     <TableCell>
                       <Typography variant="body1">{item.name}</Typography>
                     </TableCell>

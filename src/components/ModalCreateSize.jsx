@@ -33,6 +33,7 @@ export const ModalCreateStoredItemSize = ({
       const { sizes } = item;
       sizes.push({ name, count });
       await updateStoredItem(item._id, { sizes });
+      setModalState((prev) => !prev);
       update((prev) => !prev);
     } catch (err) {
       console.log(err);
