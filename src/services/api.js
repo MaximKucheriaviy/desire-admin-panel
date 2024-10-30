@@ -180,3 +180,28 @@ export const deleteStyle = async (_id) => {
     console.log(err);
   }
 };
+
+export const addImageToSet = async (id, data) => {
+  try {
+    const result = await axios.patch(`/item/imageset/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteImageFromSet = async (id, image) => {
+  try {
+    const data = await axios.patch(`/item/imageset/delete/${id}`, {
+      imageID: image._id,
+      publickID: image.id,
+    });
+    return data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

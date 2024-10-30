@@ -102,7 +102,7 @@ export const StylePage = () => {
                 <TableRow key={style._id}>
                   <TableCell>{style.name}</TableCell>
                   <TableCell>
-                    {style.type === "top" ? "Стиль низу" : "Стиль верху"}
+                    {style.type === "top" ? "Стиль верху" : "Стиль низу"}
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => deleteStyleHandler(style._id)}>

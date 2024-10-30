@@ -29,14 +29,18 @@ import {
   updateItemImage,
   getTopStyle,
   getBottomStyle,
+  addImageToSet,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import CloudUploadSharp from "@mui/icons-material/CloudUploadSharp";
+
 import { ModalCreateStoreItem } from "../components/ModalCreateStoreItem";
 import { SizesTableRow } from "../components/SizesTableRow";
 import { styled } from "@mui/material/styles";
+import { ImageSet } from "../components/ImageSet";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -76,8 +80,6 @@ export const ItemEdit = () => {
       const brands = await getAllBrands();
       const topStyles = await getTopStyle();
       const bottomStyle = await getBottomStyle();
-
-      console.log(topStyles);
 
       setTopStyleList(topStyles);
       setBottomStyleList(bottomStyle);
@@ -154,6 +156,15 @@ export const ItemEdit = () => {
     data.append("imageId", item.image.id);
     data.append("Image", target.files[0]);
     await updateItemImage(item._id, data);
+    setUpdate((prev) => !prev);
+    dispatch(disableLoader());
+  };
+
+  const onImageSetImageSelect = async ({ target }) => {
+    dispatch(enableLoader());
+    const data = new FormData();
+    data.append("Image", target.files[0]);
+    await addImageToSet(item._id, data);
     setUpdate((prev) => !prev);
     dispatch(disableLoader());
   };
@@ -293,18 +304,26 @@ export const ItemEdit = () => {
                 </Grid>
                 <Grid size={4}>
                   <Typography variant="body2">Стиль верху</Typography>
-                  <Checkbox value={item.topStyle} />
+                  <Checkbox
+                    checked={item.topStyle ? true : false}
+                    onChange={({ target }) => {
+                      if (target.checked) {
+                        inputHandler(topStyleList[0]._id, "topStyle");
+                      } else {
+                        inputHandler(null, "topStyle");
+                      }
+                    }}
+                  />
                 </Grid>
                 <Grid size={8}>
                   <FormControl disabled={!item.topStyle} fullWidth>
                     <InputLabel id="topStyleLabel"></InputLabel>
                     <Select
                       labelId="topStyleLabel"
-
-                      // value={item.category._id}
-                      // onChange={({ target }) =>
-                      //   inputHandler(target.value, "category")
-                      // }
+                      value={item.topStyle || ""}
+                      onChange={({ target }) =>
+                        inputHandler(target.value, "topStyle")
+                      }
                     >
                       {topStyleList.map((item) => (
                         <MenuItem key={item._id} value={item._id}>
@@ -317,7 +336,7 @@ export const ItemEdit = () => {
                 <Grid size={4}>
                   <Typography variant="body2">Стиль низу</Typography>
                   <Checkbox
-                    checked={item.bottomStyle}
+                    checked={item.bottomStyle ? true : false}
                     onChange={({ target }) => {
                       if (target.checked) {
                         inputHandler(bottomStyleList[0]._id, "bottomStyle");
@@ -332,7 +351,7 @@ export const ItemEdit = () => {
                     <InputLabel id="bottomStyleLabel"></InputLabel>
                     <Select
                       labelId="bottomStyleLabel"
-                      value={item.bottomStyle}
+                      value={item.bottomStyle || ""}
                       onChange={({ target }) =>
                         inputHandler(target.value, "bottomStyle")
                       }
@@ -350,8 +369,10 @@ export const ItemEdit = () => {
             <Grid
               sx={{
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-start",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                gap: "20px",
               }}
               size={6}
             >
@@ -359,40 +380,56 @@ export const ItemEdit = () => {
                 sx={{ border: "1px solid black", padding: "5px" }}
                 width={"300px"}
               >
-                <Box>
-                  <Box
-                    height={(300 * 12) / 9}
+                <Box
+                  height={(300 * 12) / 9}
+                  sx={{
+                    backgroundImage: `url(${item.image.url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  display={"flex"}
+                  justifyContent={"flex-end"}
+                  alignItems={"flex-end"}
+                >
+                  <IconButton
+                    component="label"
+                    role={undefined}
+                    variant="contained"
                     sx={{
-                      backgroundImage: `url(${item.image.url})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
+                      color: "#ffffff",
+                      border: "2px solid white",
+                      borderRadius: "10px",
                     }}
-                    display={"flex"}
-                    justifyContent={"flex-end"}
-                    alignItems={"flex-end"}
+                    tabIndex={-1}
                   >
-                    <IconButton
-                      component="label"
-                      role={undefined}
-                      variant="contained"
-                      sx={{
-                        color: "#ffffff",
-                        border: "2px solid white",
-                        borderRadius: "10px",
-                      }}
-                      tabIndex={-1}
-                    >
-                      <ModeEditOutlineIcon />
-                      <VisuallyHiddenInput
-                        type="file"
-                        accept=".jpg, .jpeg, .png"
-                        onChange={onMainImageSelect}
-                      />
-                    </IconButton>
-                  </Box>
+                    <ModeEditOutlineIcon />
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={onMainImageSelect}
+                    />
+                  </IconButton>
                 </Box>
-                {/* <img src={} alt="cover" /> */}
               </Box>
+              <ImageSet
+                update={setUpdate}
+                id={item._id}
+                imageSet={item.imageSet}
+              />
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadSharp />}
+              >
+                Завантажити зображення
+                <VisuallyHiddenInput
+                  type="file"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={onImageSetImageSelect}
+                />
+              </Button>
             </Grid>
           </Grid>
         </Box>
