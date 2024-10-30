@@ -14,6 +14,7 @@ import {
   TableCell,
   TableBody,
   Paper,
+  Checkbox,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useState, useEffect } from "react";
@@ -26,6 +27,8 @@ import {
   getTypes,
   getCategories,
   updateItemImage,
+  getTopStyle,
+  getBottomStyle,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -61,6 +64,8 @@ export const ItemEdit = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [typeList, setTypeList] = useState([]);
   const [update, setUpdate] = useState(true);
+  const [topStyleList, setTopStyleList] = useState([]);
+  const [bottomStyleList, setBottomStyleList] = useState([]);
 
   const [editNameMode, setEditNameMode] = useState(false);
   const [modalState, setModalState] = useState(false);
@@ -69,6 +74,13 @@ export const ItemEdit = () => {
     (async () => {
       dispatch(enableLoader());
       const brands = await getAllBrands();
+      const topStyles = await getTopStyle();
+      const bottomStyle = await getBottomStyle();
+
+      console.log(topStyles);
+
+      setTopStyleList(topStyles);
+      setBottomStyleList(bottomStyle);
       setBrandList(brands);
       dispatch(disableLoader());
     })();
@@ -82,6 +94,7 @@ export const ItemEdit = () => {
       dispatch(disableLoader());
     })();
   }, [dispatch]);
+
   useEffect(() => {
     if (!item.category._id) {
       return;
@@ -276,6 +289,60 @@ export const ItemEdit = () => {
                       }
                       rows={10}
                     />
+                  </FormControl>
+                </Grid>
+                <Grid size={4}>
+                  <Typography variant="body2">Стиль верху</Typography>
+                  <Checkbox value={item.topStyle} />
+                </Grid>
+                <Grid size={8}>
+                  <FormControl disabled={!item.topStyle} fullWidth>
+                    <InputLabel id="topStyleLabel"></InputLabel>
+                    <Select
+                      labelId="topStyleLabel"
+
+                      // value={item.category._id}
+                      // onChange={({ target }) =>
+                      //   inputHandler(target.value, "category")
+                      // }
+                    >
+                      {topStyleList.map((item) => (
+                        <MenuItem key={item._id} value={item._id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid size={4}>
+                  <Typography variant="body2">Стиль низу</Typography>
+                  <Checkbox
+                    checked={item.bottomStyle}
+                    onChange={({ target }) => {
+                      if (target.checked) {
+                        inputHandler(bottomStyleList[0]._id, "bottomStyle");
+                      } else {
+                        inputHandler(null, "bottomStyle");
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid size={8}>
+                  <FormControl disabled={!item.bottomStyle} fullWidth>
+                    <InputLabel id="bottomStyleLabel"></InputLabel>
+                    <Select
+                      labelId="bottomStyleLabel"
+                      value={item.bottomStyle}
+                      onChange={({ target }) =>
+                        inputHandler(target.value, "bottomStyle")
+                      }
+                    >
+                      {bottomStyleList.map((item) => (
+                        <MenuItem key={item._id} value={item._id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </FormControl>
                 </Grid>
               </Grid>

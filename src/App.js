@@ -11,6 +11,7 @@ import { CreateItemPage } from "./pages/CreateNewItem";
 import { ItemEdit } from "./pages/ItemInfo";
 import { Loader } from "./components/Loader";
 import { useLoader } from "./redux/selectors";
+import { StylePage } from "./pages/Styles";
 
 const drawerWidth = 240;
 
@@ -58,6 +59,11 @@ function App() {
               text={"Бренд"}
               path="/brand"
             />
+            <NavigationButton
+              Icon={AddToDriveIcon}
+              text={"Стилі"}
+              path="/style"
+            />
           </List>
         </Drawer>
         <Box
@@ -71,6 +77,7 @@ function App() {
             <Route element={<ItemsPage />} path="/items" />
             <Route element={<CreateItemPage />} path="/createitem" />
             <Route element={<ItemEdit />} path="/edititem/:id" />
+            <Route element={<StylePage />} path="/style" />
           </Routes>
         </Box>
       </Box>

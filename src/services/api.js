@@ -135,3 +135,48 @@ export const updateItemImage = async (id, data) => {
     console.log(err);
   }
 };
+
+export const createStyle = async (name, type) => {
+  try {
+    const result = await axios.post("/style", { name, type });
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getAllStyles = async (type) => {
+  try {
+    const result = await axios.get("/style");
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getTopStyle = async () => {
+  try {
+    const result = await axios.get("/style/top");
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getBottomStyle = async () => {
+  try {
+    const result = await axios.get("/style/bottom");
+    return result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteStyle = async (_id) => {
+  try {
+    const data = await axios.delete("/style", { data: { _id } });
+    return data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
