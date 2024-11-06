@@ -60,9 +60,9 @@ export const createItem = async (data) => {
   }
 };
 
-export const getAllItems = async (data) => {
+export const getAllItems = async (params) => {
   try {
-    const items = await axios.get("/item");
+    const items = await axios.get("/item", { params });
     return items.data;
   } catch (err) {
     console.log(err);

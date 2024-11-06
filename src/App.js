@@ -52,7 +52,7 @@ function App() {
             <NavigationButton
               Icon={EventNoteIcon}
               text={"Товари"}
-              path="/items"
+              path="/items?page=1"
             />
             <NavigationButton
               Icon={AddToDriveIcon}

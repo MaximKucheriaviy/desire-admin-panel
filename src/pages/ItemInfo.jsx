@@ -57,6 +57,7 @@ const VisuallyHiddenInput = styled("input")({
 export const ItemEdit = () => {
   const params = useParams();
   const navigate = useNavigate();
+
   const [item, setItem] = useState({
     category: {
       id: null,
@@ -270,22 +271,6 @@ export const ItemEdit = () => {
                   </FormControl>
                 </Grid>
 
-                <Grid size={2}>
-                  <Typography variant="body2">Ціна:</Typography>
-                </Grid>
-                <Grid size={10}>
-                  <TextField
-                    type="number"
-                    value={item.price}
-                    onChange={({ target }) =>
-                      chageHandler(target.value, "price")
-                    }
-                    onBlur={({ target }) =>
-                      inputHandler(target.valueAsNumber, "price")
-                    }
-                  />
-                </Grid>
-
                 <Grid mt={4} size={12}>
                   <FormControl fullWidth>
                     <TextField
@@ -443,16 +428,19 @@ export const ItemEdit = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <Typography variant="body2">Колір</Typography>
+                      <Typography variant="body2">Аптикул</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2">Назва кольору</Typography>
+                      <Typography variant="body2">Шрихкод</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">Розмір</Typography>
                     </TableCell>
                     <TableCell width={200}>
-                      <Typography variant="body2">Розміри</Typography>
+                      <Typography variant="body2">Наявна кількість</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2">Наявна кількість</Typography>
+                      <Typography variant="body2">Ціна</Typography>
                     </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
