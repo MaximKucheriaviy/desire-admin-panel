@@ -4,7 +4,7 @@ import { useState } from "react";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
-import { deleteStoredItem, updateStoredItem } from "../services/api";
+import { deleteStoredItem } from "../services/api";
 import { ModalCreateStoredItemSize } from "./ModalCreateSize";
 
 export const SizesTableRow = ({ item, update, index }) => {
@@ -18,18 +18,18 @@ export const SizesTableRow = ({ item, update, index }) => {
     dispatch(disableLoader());
   };
 
-  const deleteSize = async (index) => {
-    try {
-      dispatch(enableLoader());
-      const { sizes } = item;
-      sizes.splice(index, 1);
-      await updateStoredItem(item._id, { sizes });
-      update((prev) => !prev);
-    } catch (err) {
-      console.log(err);
-    }
-    dispatch(disableLoader());
-  };
+  // const deleteSize = async (index) => {
+  //   try {
+  //     dispatch(enableLoader());
+  //     const { sizes } = item;
+  //     sizes.splice(index, 1);
+  //     await updateStoredItem(item._id, { sizes });
+  //     update((prev) => !prev);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   dispatch(disableLoader());
+  // };
   return (
     <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>

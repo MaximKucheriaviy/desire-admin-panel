@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ItemCard } from "../components/ItemCard";
-import { getAllItems, getCategories } from "../services/api";
+import { getAllItems, getCategories, getTypes } from "../services/api";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
@@ -28,6 +28,7 @@ export const ItemsPage = () => {
   const [items, setItems] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [pageCount, setPageCount] = useState(0);
+  const [typeList, setTypeList] = useState([]);
 
   let [searchParams, setSearchParams] = useSearchParams();
 
@@ -39,11 +40,15 @@ export const ItemsPage = () => {
 
   const inputHandler = async (value, field) => {
     const params = new URLSearchParams(searchParams);
+    if (field === "category") {
+      params.delete("type");
+    }
     if (!value || value === "all") {
       params.delete(field);
     } else {
       params.set(field, value);
     }
+    params.set("page", 1);
     setSearchParams(params);
   };
 
@@ -51,14 +56,11 @@ export const ItemsPage = () => {
     (async () => {
       dispatch(enableLoader());
       const items = await getAllItems(searchParams);
-      const cat = await getCategories();
-      cat.unshift({ _id: "", name: "Всі" });
-      setCategoryList(cat);
       setItems(items.data);
       setPageCount(items.totalPages);
       dispatch(disableLoader());
     })();
-  }, [dispatch, searchParams]);
+  }, [dispatch, searchParams, setSearchParams]);
 
   useEffect(() => {
     (async () => {
@@ -68,7 +70,20 @@ export const ItemsPage = () => {
       setCategoryList(cat);
       dispatch(disableLoader());
     })();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    (async () => {
+      if (!searchParams.get("category")) {
+        return;
+      }
+      dispatch(enableLoader());
+      const type = await getTypes(searchParams.get("category"));
+      type.unshift({ _id: "", name: "Всі" });
+      setTypeList(type);
+      dispatch(disableLoader());
+    })();
+  }, [dispatch, searchParams]);
   return (
     <Box>
       <Typography variant="h4">Список товарів</Typography>
@@ -90,16 +105,13 @@ export const ItemsPage = () => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid>
-          <FormControl
-            fullWidth
-            error={item.category._id !== item.type.category}
-          >
+        <Grid size={3}>
+          <FormControl disabled={!searchParams.get("category")} fullWidth>
             <InputLabel id="typeLabel">Тип</InputLabel>
             <Select
               labelId="typeLabel"
               label="Тип"
-              value={item.type._id}
+              value={searchParams.get("type") || ""}
               onChange={({ target }) => inputHandler(target.value, "type")}
             >
               {typeList.map((item) => (
