@@ -1,6 +1,7 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:3001/api";
+axios.defaults.baseURL = "https://desired-server.onrender.com/api";
+// axios.defaults.baseURL = "http://localhost:3001/api";
 
 export const createBrand = async (name) => {
   try {
@@ -201,6 +202,19 @@ export const deleteImageFromSet = async (id, image) => {
       publickID: image.id,
     });
     return data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const uploadNewItems = async (data) => {
+  try {
+    const result = await axios.post(`/item/csv/new`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return result.data;
   } catch (err) {
     console.log(err);
   }

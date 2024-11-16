@@ -14,13 +14,36 @@ import {
   FormControl,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 import { ItemCard } from "../components/ItemCard";
-import { getAllItems, getCategories, getTypes } from "../services/api";
+import {
+  getAllItems,
+  getCategories,
+  getTypes,
+  uploadNewItems,
+} from "../services/api";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { enableLoader, disableLoader } from "../redux/slices";
 import { useSearchParams } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
+import CloudUploadSharp from "@mui/icons-material/CloudUploadSharp";
+import { styled } from "@mui/material/styles";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export const ItemsPage = () => {
   const navigate = useNavigate();
@@ -84,8 +107,23 @@ export const ItemsPage = () => {
       dispatch(disableLoader());
     })();
   }, [dispatch, searchParams]);
+
+  const onCSVGETSelect = async ({ target }) => {
+    dispatch(enableLoader());
+    const data = new FormData();
+    data.append("data", target.files[0]);
+    const result = await uploadNewItems(data);
+    console.log(result);
+
+    dispatch(disableLoader());
+    NotificationManager.info(
+      `Завантаено: ${result.uploaded}\n Помилки: ${result.errorUpload}\n Дублювання${result.barcodeDuplicate}\n`
+    );
+  };
+
   return (
     <Box>
+      <NotificationContainer />
       <Typography variant="h4">Список товарів</Typography>
       <Grid container>
         <Grid size={3}>
@@ -150,9 +188,30 @@ export const ItemsPage = () => {
           />
         </Box>
       </Box>
-      <Button onClick={() => navigate("/createitem")} variant="contained">
-        Створити
-      </Button>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"flex-start"}
+        gap={2}
+      >
+        <Button onClick={() => navigate("/createitem")} variant="contained">
+          Створити
+        </Button>
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadSharp />}
+        >
+          Додати позиції
+          <VisuallyHiddenInput
+            type="file"
+            accept=".csv"
+            onChange={onCSVGETSelect}
+          />
+        </Button>
+      </Box>
     </Box>
   );
 };

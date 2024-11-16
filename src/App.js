@@ -1,3 +1,4 @@
+import "react-notifications/lib/notifications.css";
 import { AppBar, Drawer, Toolbar, List, Box } from "@mui/material";
 import FilterFramesIcon from "@mui/icons-material/FilterFrames";
 import AddToDriveIcon from "@mui/icons-material/AddToDrive";
